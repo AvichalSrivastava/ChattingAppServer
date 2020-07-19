@@ -1,15 +1,30 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const http = require('http');
+const jwt = require('jsonwebtoken');
 const app = express();
-var PORT = process.env.PORT || 3000;
+let server = http.createServer(app);
+let io = require("socket.io").listen(server);
+var PORT = process.env.PORT || 3001;
+
+io.on("connection", socket => {
+  console.log("a user connected");
+  socket.on("chat message", msg => {
+    console.log(msg);
+    io.emit("chat message", msg);
+  });
+});
+
+const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 //------------APIs Starts-------------------------------
-app.get('/',(req,res)=>
+app.get('/port',(req,res)=>
 {
-  res.json("[]successfully connected to the server");
+  var token = jwt.sign({port:PORT}, 'shhhhh');
+  console.log({token});
+  res.json({token});
 });
 
 
 //-----------APIs End-----------------------------------
-app.listen(PORT,()=>console.log(`Server is running on ${PORT} port`));
+server.listen(PORT,()=>console.log(`Server is running on ${PORT} port`));
