@@ -2,8 +2,8 @@ const express = require('express');
 const http = require('http');
 const jwt = require('jsonwebtoken');
 const app = express();
-let server = http.createServer(app);
-let io = require("socket.io").listen(server);
+var server = http.createServer(app);
+var io = require("socket.io").listen(server);
 var PORT = process.env.PORT || 3001;
 
 io.on("connection", socket => {
